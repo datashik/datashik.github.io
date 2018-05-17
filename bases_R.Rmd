@@ -1,0 +1,564 @@
+---
+title: "Bases de R"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: lumen
+    highlight: textmate
+    self_contained: true
+    df_print: paged
+    code_folding: show
+--- 
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+
+# Installation des packages
+
+Dans RStudio, il est possible d'exécuter le code ligne à ligne en faisant Ctrl+Entrée.
+
+Dans R, il existe de nombreux packages qu'il est possible d'importer. Ainsi, on pourra utilier des données et des fonctions qui sont contenues dans ces packages.
+
+Pour installer un package, 
+
+- sous RStudio, il est possible d'utiliser le bouton "Install" dans l'onglet "Packages"
+- il est possible d'exécuter le code suivant 
+
+```{r, eval=FALSE}
+install.packages("nom_du_package")
+```
+
+Ensuite, pour charger le package, il faut exécuter le code suivant: 
+
+```{r, eval=FALSE}
+library("nom_du_package")
+```
+
+Pour des packages qui sont déposés sur le site github.com, par exemple le package d3treeR, on peut faire de la façon suivante:
+
+```{r, eval=FALSE}
+devtools::install_github("timelyportfolio/d3treeR")
+library(d3treeR)
+```
+
+
+# Environnement
+
+- Créations d'objets: dans RStudio, vous pouvez voir ces objets dans la fenêtre "Environnement"
+
+```{r}
+x=3.14159; y='hello world'; z=TRUE
+# ou
+x <- 5 
+5 -> x
+```
+- Voir la valeur des variables dans la console
+```{r}
+print(y)
+# on peut aussi utiliser les parenthèses autour lors de la création d'objets pour les afficher les résultats
+( num <- 3.14 )  
+```
+- Structure des objets ou fonctions
+```{r}
+str(x)
+str(max)
+```
+- Quelques opérations sur les objets
+```{r}
+#ls()              # lister les objets dans Environnement
+rm(y)             # supprimer un objet
+#rm(list=ls())     # supprimer tous les objets
+```
+- Répertoire de travail
+```{r}
+# getwd()                                # afficher le répertoire de travail actuel
+# setwd("/Users/robinedwards/Documents") # définir un répertoire de travail
+print    (  "R ignores the 'white-space' in command syntax"     )   
+```
+- Aide sur les fonctions ou code R
+```{r}
+# help(fonction à préciser)
+# par exemple:
+# help(max)
+# ou
+# ?max
+# ??csv                  # rechercher dans toute la documentation
+# library(help=utils)    # aide pour un package en particulier
+```
+
+
+# Objets
+
+Les objets les plus basiques sont présentés: vecteur, matrice, array, data.frame...
+
+D'autres objets couramment utilisés sont: dates (lubridate), data.table (similaires au data.frame, c'est un package plus efficace et rapide pour manipuler les data.frames).
+
+## Vecteurs
+
+- Création de vecteurs
+```{r}
+vec <- c(2,5,8,3,7)
+# pour une suite de nombre
+vec <- 10:20
+```
+- Indexation des éléments dans un vecteur
+```{r}
+vec[3]
+vec[3:6]
+vec[ c(1,3,8) ]
+```
+- Sélection grâce à un critère
+```{r}
+vec > 15
+vec[vec > 15]
+```
+- Vérifier si un élément est dans le vecteur
+```{r}
+5 %in% vec
+12 %in% vec
+```
+- Tous les éléments sont dans un vecteur sont du même type
+```{r}
+(x = c('one', 'five', 'two', 3, 'two'))
+```
+- Trouver un élément dans le vecteur (le premier)
+```{r}
+match('two', x)
+match(c('two','five'), x)
+```
+- Ordonner un vecteur
+```{r}
+vec <- c(10,6,2,4,10,2,8,7,1,6)
+sort(vec)
+```
+
+
+## Matrices
+
+Les matrices sont des vecteurs à 2 dimensions.
+
+- Création d'une matrice
+```{r}
+matrx = matrix(1:15, 3, 5)
+# ou
+matrx <- 1:12
+dim(matrx) <- c(3,4)
+matrx
+```
+- Tranposée de matrice
+```{r}
+t(matrx) # a matrix can be easily transposed
+```
+- Matrice de chaînes de charatères (tous les éléments dans une matrice sont du même type)
+```{r}
+(matrx = matrix(c(1:14,"15e element"), 3, 5))
+
+```
+
+## Array
+
+Un objet array est un vecteur à n dimensions.
+
+- Création d'un array
+```{r}
+( arry <- array(1:24, dim=c(4,3,2)) )
+```
+- Sélection d'un ou plusieurs éléments
+```{r}
+arry[12]        # un seul nombre permet de sélection le nième élément dans l'ordre
+arry[3,1,2]     # plusieurs nombres permettent sélection les éléments selon les dimensions
+arry[,,2]
+arry[,1,]
+
+```
+
+## Data.frame
+
+Un data.frame est comme une matrice, mais permet de stocker des données de différents types dans ses différentes colonnes.
+
+- Création d'un data.frame
+```{r}
+df <- data.frame(name = c('Matt','Kate','Jacquie','Simon','Nita'),
+                 age = c(35,29,32,35,39))
+
+```
+- Structure d'un data.frame
+```{r}
+str(df)
+```
+- Sélection des éléments
+```{r}
+df[1,]
+df[2:3,]
+df[,1]
+df[2,1]
+```
+- les noms de lignes et de colonnes
+```{r}
+dimnames(df)
+colnames(df)
+names(df) 
+row.names(df)
+```
+- Sélection de variables
+```{r}
+df$name
+df$name[2]
+```
+- Renommer les variables
+```{r}
+names(df) <- c('person','years')
+row.names(df) <- c('R1','R2','R3','R4','R5')
+```
+- Informations sur les dimensions
+```{r}
+length(vec)
+dim(df)
+dim(arry)
+nrow(df)
+ncol(df)
+
+```
+- Ordonner un data.frame selon une variable
+```{r}
+df[order(df$years),]
+```
+
+## Listes
+
+Une liste permet de stocker des données de différentes natures.
+
+- Création d'une liste vide
+```{r}
+lst = list()
+```
+- Remplir des éléments dans une liste
+```{r}
+lst[1] = "one"
+lst[[2]] <- "two"
+lst[length(lst)+1] <- "three"
+print(lst)
+
+```
+- Sélectionner des éléments dans une liste
+```{r}
+lst[[1]] # premier élément de la liste, la sortie n'est plus une liste
+lst[1]   # premeir élément de la liste, la sortie est une liste
+lst[2:3]
+lst[c(1,3)] 
+```
+- Supprimer des éléments dans une liste
+```{r}
+lst[[3]] <- NULL
+lst[1:2] <- NULL
+lst
+```
+- Types d'éléments dans une liste: les éléments d'une liste peuvent être de n'importe quel type
+```{r}
+lst[[1]] <- list('subitem1', 2, 3)
+lst[[2]] <- 'item2'
+lst
+lst[[1]][[1]]
+
+```
+- Dictionnaire
+```{r}
+dict <- list(mon=1, tues=2)
+dict['wed'] <- 3
+print(dict)
+dict[['tues']]
+dict[c('mon','wed')]
+```
+
+## Objects logiques
+
+- Création
+```{r}
+(bool <- TRUE)
+(bool <- c(TRUE, FALSE, TRUE))
+```
+- Opérations de comparaison
+```{r}
+3==3
+1==2
+1>2
+1<2
+```
+
+## Facteurs
+
+Les facteurs sont des vecteurs dont les valeurs sont définies et limitées.
+
+- Création d'un facteur
+```{r}
+factr <- as.factor(c(10,30,20,10,20,20,30))
+str(factr)
+```
+- Valeurs possibles ("niveaux")
+```{r}
+levels(factr)
+```
+- Comptage des valeurs
+```{r}
+table(factr)
+```
+- Conversion des facteurs en numériques
+```{r}
+# niveau
+as.numeric(factr)
+
+# conversion d'abord en chaînes de caracètres
+as.numeric(as.character(factr))
+```
+- Modification des facteurs
+```{r}
+print(df)
+# invalid
+df$person[1] <- 'Matthew'
+
+# conversion d'abord en chaînes de caractères
+df$person <- as.character(df$person)
+df$person[1] <- 'Matthew'
+df$person <- as.factor(df$person)   # coerce back to factor if necessary
+levels(df$person)
+
+```
+
+## Valeurs manquantes
+
+```{r}
+(x = 1:5)
+x[8] = 8
+x[3] = NA
+x
+na.omit(x)
+x[na.omit(x)]
+is.na(x)
+x[!is.na(x)]
+```
+
+## Informations objets
+
+```{r}
+num=3
+char="3"
+
+class(bool)
+class(num)               # numeric est le type par défaut pour les variables numériques
+class(as.integer(num))   # integer : entier
+class(char)              # character : chaînes de caractères
+class('237' )            # Nombres entre guillemets sont des chaînes de caractères
+as.numeric('237')        # on peut convertir
+as.character(237)        
+
+# quand on parle de types de variables, on doit préciser à quel niveau
+class(df)
+class(df[,2])
+class(df[,1])
+```
+
+
+
+# Structures et fonctions
+
+## Opérations logiques
+
+```{r}
+2 + 2 == 4 
+3 <= 2 
+3 >= 2 
+'string' == "string"
+'b' >= 'a' 
+3 != 3  
+c(4,2,6) == c(4,2,8)
+TRUE == T 
+TRUE & TRUE
+TRUE | FALSE 
+F | F
+```
+
+## Structure if/else
+
+```{r}
+x <- 4
+if(x < 5){ 
+  print('x est supérieur à 5')
+} else{
+  print('x est inférieur à 5')
+}
+
+if(T|F) print('Vrai ou faux')
+if(T&F) print('') else print("Vrai et faux")
+```
+
+
+## Structure for
+
+```{r}
+for(i in 1:5){
+  print(paste('number ',i))
+}
+```
+
+## Structure while
+
+```{r}
+i = 10
+while(i > 0){
+  print(paste('number ',i))
+  i = i - 3
+}
+
+```
+
+
+## Fonctions
+
+- Création d'une fonction
+```{r}
+
+multiply <- function(input1, input2){
+  tot <- input1 * input2
+  return(tot)
+}
+```
+- Exécution d'une fonction
+```{r}
+multiply(3,5)
+```
+
+
+## Fonctions mathématiques
+
+```{r}
+seq(-2, 2, by=.2) 
+seq(length=10, from=-5, by=.2)    # with range defined by vector length
+rnorm(20, mean = 0, sd = 1)       # random normal distribution
+runif(20, min=0, max=100)         # array of random numbers
+sample(0:100, 20, replace=TRUE)   # array of random integers
+table(warpbreaks[,2:3])           # array summary stats (powerful summary tool)
+min(vec)
+max(vec)
+range(vec)
+mean(vec)
+median(vec)
+sum(vec)
+prod(vec)
+abs(-5) 
+sd(rnorm(10)) 
+4^2 
+sqrt(16)                   
+5%%3                            
+6%%2                                   
+for(i in 1:100) if(i%%20==0) print(i) 
+```
+
+
+# Import et export
+
+```{r}
+# df <- read.csv('example.csv')
+# write.csv(df, 'example.csv')
+```
+
+# Exploration des données
+
+## Examiner des données
+
+- Examiner les premières ou dernières lignes
+```{r}
+head(InsectSprays)
+tail(InsectSprays, n=3)
+```
+- Résumé statistique
+```{r}
+summary(InsectSprays)
+```
+- Fonction `aggregate`
+```{r}
+aggregate(InsectSprays$count, by=list(InsectSprays$spray), FUN=mean)
+sumInsects <- aggregate(InsectSprays$count, by=list(InsectSprays$spray), FUN=sum)
+names(sumInsects) <- c('group', 'sum')
+print(sumInsects)
+```
+- Sous-ensembles avec critères
+```{r}
+warpbreaks[warpbreaks$wool=='A',]
+warpbreaks[warpbreaks$tension %in% c('L','M'),]
+```
+- Concaténer des lignes d'observations
+```{r}
+(newrow <- data.frame(breaks=42, wool='B', tension='M'))
+(warpbreaks <- rbind(warpbreaks, newrow))
+
+```
+
+## Valeurs manquantes
+
+```{r}
+sapply(airquality, function(x) sum(is.na(x)))
+```
+```{r}
+library(Hmisc)
+describe(airquality)
+```
+
+
+## Graphique
+
+- Graphique simple
+```{r}
+plot(1:10)
+plot(sort(rnorm(100)), pch=16, cex=0.5)                 # specifying point and size respectively
+plot(x=1:25, y=25:1, pch=1:25)                          # x & y inputs, and showing the available point symbols
+plot(sin, -pi, 2*pi)
+hist(rnorm(1000), breaks=50)
+barplot(sumInsects$sum, names.arg = sumInsects$group)
+pie(sumInsects$sum, labels = sumInsects$group)
+
+```
+- Rajouter des éléments dans un graphique
+```{r}
+x <- sample(0:100, 25, replace=TRUE)
+plot(x, pch=17)
+lines(x, col='#00FF00')
+points(x+5, pch=16, col='red')
+```
+- Barplot
+```{r}
+sumWB <- aggregate(warpbreaks$breaks, by=list(warpbreaks$wool, warpbreaks$tension), FUN=mean)
+names(sumWB) <- c('wool','tension','mean_breaks')
+(data <- cbind(sumWB$mean_breaks[c(1,3,5)], sumWB$mean_breaks[c(2,4,6)]))
+barplot(data, names.arg=c('Group A','Group B'), 
+        legend.text=c('L','M','H'), args.legend = list(x = "right"))
+
+barplot(data, names.arg=c('Group A','Group B'), beside=T,
+        legend.text=c('L','M','H'), args.legend = list(x = "topright"))
+
+```
+- Utilisation de symboles
+```{r}
+(cities <- data.frame(city=c('London','Bristol','Manchester','Leeds'), 
+                      lon=c(-0.1,-2.6,-2.2,-1.5), lat=c(51.5,51.4,53.5,53.8), pop=c(8,1,2.7,0.8)))
+symbols(x=cities$lon, y=cities$lat, circles=sqrt(cities$pop), inches=0.3, 
+        bg='red', fg=NULL, asp=T, xlab='Longitude', ylab='Latitude')
+abline(h=(seq(51,53,1)), col="lightgray", lty=1)
+abline(v=(seq(-4,1,1)), col="lightgray", lty=1)
+text(x=cities$lon, y=cities$lat+0.2, labels=cities$city)
+
+```
+
+# Utilisation de rmd
+
+Rmarkdown permet de stocker le code R avec une structure de rapport.
+
+Quelques remarques pratiques:
+
+- Sauvegarder le code d'installations de packages dans un chunk avec `eval=FALSE`
+- Regrouper le chargement de library dans un chunk au début du code
+- Ne pas afficher des messages ou warnings en précisant: `message=FALSE` ou `warning=FALSE`
+
